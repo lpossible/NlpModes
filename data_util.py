@@ -18,6 +18,7 @@ from keras.callbacks import EarlyStopping
 from EncoderLayer import Encoder
 from PartMaskAttention import PartAttention
 from RelativePositionEncoding import RelativePositionMultiAttention
+from EnhanceEmbedding import EEmbedding
 import os
 import tensorflow as tf
 
@@ -151,12 +152,14 @@ early_stop = EarlyStopping(patience=5)
 # 建立模型
 inputs = Input(shape=(100,), dtype='int32', name='inputs')
 masks = Input(shape=(100,), dtype='float32', name='masks')
-x = Embedding()(inputs)
+x = EEmbedding()(inputs)
+# x = Embedding()(inputs)
+x = Dropout(rate=0.2)(x)
 # x = PositionEncoding()(x)
 # x = Encoder(attention_dim=128, inner_dim=128, out_dim=128)([x, masks])
-# x = Bidirectional(LSTM(128, return_sequences=True))(x)
+x = Bidirectional(LSTM(128, return_sequences=True))(x)
 # x = Encoder(attention_dim=128, inner_dim=128, out_dim=128)([x, masks])
-x = RelativePositionMultiAttention()([x, masks])
+# x = RelativePositionMultiAttention()([x, masks])
 x = Dropout(rate=0.2)(x)
 # x = PartAttention(attention_dim=128)([x, masks])
 # x = Attention(attention_dim=128, masking=True, encoder=False)([x, masks])
@@ -174,7 +177,7 @@ model.summary()
 model.fit(x=[train_data, train_mask_data], y=train_labels, epochs=100, validation_split=0.2, callbacks=[early_stop])
 
 # 模型评估
-score = model.evaluate(x=[test_data, test_mask_data], y=test_labels, batch_size=10)
+score = model.evaluate(x=[test_data, test_mask_data], y=test_labels, batch_size=32)
 print(score)
 # 模型保存
-model.save('./model/encoder_6encoder.h5')
+model.save('./model/ee_dp_bilstm_dp_tr.h5')

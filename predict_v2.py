@@ -12,18 +12,20 @@ from EncoderLayer import Encoder
 from PartMaskAttention import PartAttention
 import os
 from RelativePositionEncoding import RelativePositionMultiAttention
+from EnhanceEmbedding import EEmbedding
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
-model = load_model("./model/encoder_6encoder.h5", custom_objects={"CRF": CRF, "crf_loss": crf_loss,
-                                                                  "crf_viterbi_accuracy": crf_viterbi_accuracy,
-                                                                  "Attention": Attention,
-                                                                  "PositionEncoding": PositionEncoding,
-                                                                  "Embedding": Embedding,
-                                                                  'PositionWiseFeedForward': PositionWiseFeedForward,
-                                                                  'LayerNormalization': LayerNormalization,
-                                                                  'Encoder': Encoder,
-                                                                  'PartAttention': PartAttention,
-                                                                  'RelativePositionMultiAttention': RelativePositionMultiAttention})
+model = load_model("./model/ee_dp_bilstm_dp_tr.h5", custom_objects={"CRF": CRF, "crf_loss": crf_loss,
+                                                                    "crf_viterbi_accuracy": crf_viterbi_accuracy,
+                                                                    "Attention": Attention,
+                                                                    "PositionEncoding": PositionEncoding,
+                                                                    "Embedding": Embedding,
+                                                                    'PositionWiseFeedForward': PositionWiseFeedForward,
+                                                                    'LayerNormalization': LayerNormalization,
+                                                                    'Encoder': Encoder,
+                                                                    'PartAttention': PartAttention,
+                                                                    'RelativePositionMultiAttention': RelativePositionMultiAttention,
+                                                                    'EEmbedding': EEmbedding})
 special_words = ['<PAD>', '<UNK>']  # 特殊词表示
 # 读取字符词典文件
 with open('./data/vocab.txt', encoding="utf8") as fo:
