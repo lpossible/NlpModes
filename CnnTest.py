@@ -14,6 +14,7 @@ from keras_contrib.layers import CRF
 from keras.models import Model
 from keras_contrib.losses import crf_loss
 from keras_contrib.metrics import crf_viterbi_accuracy
+from LocalAttention import LocalAttention
 
 tf.set_random_seed(4)
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
@@ -110,14 +111,14 @@ test_labels = to_categorical(test_labels, len(labels_dict))
 # 建立模型
 inputs = Input(shape=(100,), dtype='int32')
 x = Embedding()(inputs)
-x = Conv1D(64, 3, padding="same")(x)
 x = Bidirectional(LSTM(128, return_sequences=True))(x)
+x = LocalAttention()(x)
 x = Dense(len(labels_dict))(x)
 outputs = CRF(len(labels_dict))(x)
 model = Model(inputs=inputs, outputs=outputs)
 model.compile(loss=crf_loss, optimizer='adam', metrics=[crf_viterbi_accuracy])
-model.fit(x=[train_data], y=train_labels, epochs=10, validation_split=0.2)
+model.fit(x=[train_data[:50000]], y=train_labels[:50000], epochs=1, validation_split=0.2, batch_size=16)
 # 模型评估
-score = model.evaluate(x=[test_data], y=test_labels, batch_size=32)
+score = model.evaluate(x=[test_data[:4624]], y=test_labels[:4624], batch_size=16)
 print(score)
-model.save('./model/people_em_cnn_bilstm_dense_crf.h5')
+model.save('./model/people_em_bilstm_localatt.h5')
