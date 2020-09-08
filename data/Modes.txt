@@ -1,0 +1,118 @@
+﻿以下模型设置epoch=100
+3.经典BLSTM+Attention(no mask)+crf:维数全部设置为128 模型名=blstm128_attention128_nomask.h5
+P=93.25% R=78.50% F=85.24%
+
+4.在blstm前后加encoder层(包装的)，维数全部设置为128，全部拉胯 模型名=blstm128_encoder_nomask.h5 和encoder128_blstm128_nomask.h5
+
+5.一层编码层，维度全部为128 外部展开encoder 模型名=encoderstack1_128_nomask.h5
+p=77.38% r=71.60% f=74.37%
+
+6.1层编码层，将编码层包装为Encoder层，模型直接拉胯，什么原因？模型名=inner_encoderstack1_128_nomask.h5
+
+7.经典BLSTM+Attention(mask)+crf:维数全部设置为128 模型名=blstm128_attention128_mask_nopos.h5
+p=88.28% r=84.85% f=86.53%
+
+8.对Attention层的残差连接修正后(外部展开encoder层)，1层encoder，除Attention层的值矩阵(v)设置为数据维度外，其余全部为128维 模型名=encoder_stack1_mask.h5
+p=86.81% r=77.94% f=82.14%
+ 
+# 以下Attention层的残差连接均为修正后
+9.6层encoder内部循环，维数全部设置为128，除Attention层的值矩阵(v), 模型名=encoder_stack6_mask.h5
+模型无效果
+
+10.1层encoder内部循环，除Attention层的值矩阵，维数全部设置为128，模型名=inner_encoder_stack1_mask.h5
+模型无效果
+
+11.6层外部展开，除Attention层的值矩阵，维数全部设置为128，模型名=outer_encoder_stack6_mask.h5
+p=71.79% r=50.38% f=59.21%
+
+12.同11，只是在Attention层中不做mask，模型名=outer_encoder_stack6_nomask.h5
+p=81.67% r=70.45% f=75.65%
+
+13.对attentioon层权重矩阵的前半段矩阵后后半段矩阵分别mask，模型名=blstm_part_attention.h5
+p=79.57% r=74.15% f=76.76%
+
+14.完整的partAttention,模型名=all_part_mask_attention.h5
+p=79.03% r=72.44% f=75.59%
+
+15.修正pe后的6层编码模型，模型名=rpe_6transformer.h5
+p=80.29% r=67.14% f=73.13%
+
+16.bilstm+6层Transformer且没有位置编码层，模型名=nopos_bilstm_6transformer.h5
+p=87.10% r=83.14% f=85.08%
+
+# 以下模型均为三字标识
+17.三字标注法，经典BLSTM（mask）,模型名=bme_bilstm_attention.h5
+p=87.56% r=80.02% f=83.62%
+
+18.pos+bilstm+6encoder,模型名=pos_bilstm_6encoder.h5
+p=89.63% r=77.75% f=83.27%
+
+19.pos+6encoder,模型名=pos_6encoder.h5 加了droupt
+p=88.15% r=78.22% f=82.89%
+
+20.nopos+6encoder,模型名=nopos_6encoder.h5，加了droupt
+p=90.15% r=81.44% f=85.57%
+
+21.nopos+6encoder,模型名=nopos_nodroupt_6encoder.h5z
+p=83.53% r=67.23% f=74.50%
+
+22.relativepos与原embedding拼接，然后接6层transformer编码层。模型名=relative_embedding_6encoder.h5
+p=87.28% r=74.72% f=80.51%
+
+23.embedding层后接一个改进的transformer编码层，在接6层编码
+p=83.87% r=71.40% f=77.14%
+
+24.对原位置编码在embedding层进行拼接，模型名=test.h5
+p=89.45% r=81.06% f=85.05%
+
+25.将24embedding结果传入bilstm层，模型名=pos_concatwithembedding_bilstm.h5
+p=87.12% r=80.68% f=83.78%
+
+//以下模型描述写法改为对每个层相加连接。
+26.Emebdding+BiLSTM+Dropout+Attention,模型名=em_bilstm_dp_at.h5
+P=86.43% R=83.41% F=84.89%
+
+27.Emebdding+BiLSTM+Attention,模型名=em_bilstm_at.h5
+P=88.24% R=81.34% F=84.65%
+
+28.Emebdding+Dropout+BiLSTM+Dropout+Attention,模型名=em_dp_bilstm_dp_at1.h5
+P=90.33% R=80.49% F=85.13%
+
+29.EEmbedding+Dropout+BiLSTM+Dropout+Transformer,模型名=ee_dp_bilstm_dp_tr.h5
+P=92.30% R=84.73% F=88.35%
+//以下为人民日报语料
+30.EEmbedding+Dropout+BiLSTM+Dropout+Transformer，模型名=people_ee_dp_bilstm_dp_tr.h5   此模型30epoch
+P=78.58% R=81.86% F=80.19%
+
+EEmbedding+Dropout+BiLSTM+Dropout+Transformer，模型名=people_ee_dp_blstm_dp_tr10.h5
+P=78.39% R=74.83% F=76.57%
+P=87.05% R=76.43% F=81.39%
+
+31.Emebdding+PositionEncoding+Transformer,模型名=people_transformer.h5
+P=66.70% R=60.33% F=63.35%
+
+32.Emebdding+Transformer,模型名=people_nopos_transformer.h5
+P=67.31% R=61.35% F=64.19%
+
+33.Emebdding+Dropout+BiLSTM+Dropout+Attention,模型名=people_em_dp_blstm_dp_at.h5
+P=83.91% R=77.93% F=80.81
+
+34.EEmbedding+Dropout+BiLSTM+Dropout+Transformer，模型名=people_ee_dp_blstm_dp_tr10_vnof.h5 对原transformer中的attention层中的v不再进行映射
+P=62.16% R=51.95% F=56.60%
+
+35.Emebdding+Dropout+BiLSTM+BiLSTM,模型名=pBB10.h5
+P=86.86% R=86.02% F=86.44%
+
+36.people_em_dp_bilstm_.h5
+P=86.55% R=82.56% F=84.51%
+//以下为郭老师10epoch数据
+33.EEmbedding+Dropout+BiLSTM+Dropout+Transformer，模型名=None
+P=83.97% R=79.84% F=81.85%
+
+34.Emebdding+BiLSTM+Dropout+Attention,模型名=None
+F=81.24% R=76.36% F=78.73%
+//以下为注意力机制论文中数据
+1.模型名=possibility_1_100.h5，采用测试概率文件采用总体的而训练用训练数据的；
+P=91.28% R=79.26% F=84.85%
+2.模型=all_possibility_1_100.h5，采用训练数据和测试数据的总概率训练
+P=90.52% R=81.34% F=85.69%
