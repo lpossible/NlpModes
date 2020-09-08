@@ -80,7 +80,7 @@ P=90.33% R=80.49% F=85.13%
 
 29.EEmbedding+Dropout+BiLSTM+Dropout+Transformer,模型名=ee_dp_bilstm_dp_tr.h5
 P=92.30% R=84.73% F=88.35%
-//以下为人民日报语料
+//以下为MSRA语料
 30.EEmbedding+Dropout+BiLSTM+Dropout+Transformer，模型名=people_ee_dp_bilstm_dp_tr.h5   此模型30epoch
 P=78.58% R=81.86% F=80.19%
 
